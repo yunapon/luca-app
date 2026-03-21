@@ -59,12 +59,12 @@ function rollGacha() {
 // --- コレクション管理 ---
 
 function loadCollection() {
-  const saved = localStorage.getItem("tankogo-collection");
+  const saved = localStorage.getItem(getKey("collection"));
   return saved ? JSON.parse(saved) : {};
 }
 
 function saveCollection(collection) {
-  localStorage.setItem("tankogo-collection", JSON.stringify(collection));
+  localStorage.setItem(getKey("collection"), JSON.stringify(collection));
 }
 
 function addToCollection(cardId) {

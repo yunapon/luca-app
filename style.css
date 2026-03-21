@@ -43,6 +43,104 @@ body {
 }
 
 /* ========================
+   ログイン画面
+   ======================== */
+.login-input {
+  display: block;
+  width: 100%;
+  padding: 14px 18px;
+  border: 2px solid #b3e0f2;
+  border-radius: 14px;
+  font-size: 1.1rem;
+  color: #333;
+  outline: none;
+  text-align: center;
+  margin-bottom: 12px;
+}
+
+.login-input:focus {
+  border-color: #5aaad4;
+}
+
+.saved-users {
+  margin-top: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.saved-user-btn {
+  padding: 12px 20px;
+  border: 2px solid #b3e0f2;
+  border-radius: 14px;
+  background-color: rgba(255, 255, 255, 0.8);
+  font-size: 1rem;
+  color: #2a7db5;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: left;
+}
+
+.saved-user-btn:hover {
+  background-color: #e6f5fb;
+  border-color: #5aaad4;
+}
+
+/* ログアウトボタン */
+.logout-btn {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  background: none;
+  border: none;
+  color: #aaa;
+  font-size: 0.85rem;
+  cursor: pointer;
+  margin-top: 8px;
+}
+
+.logout-btn:hover {
+  color: #e08080;
+}
+
+/* ========================
+   ステータス画面
+   ======================== */
+.status-name {
+  text-align: center;
+  font-size: 1.4rem;
+  font-weight: bold;
+  color: #1b3a5c;
+  margin-bottom: 20px;
+}
+
+.status-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.status-item {
+  text-align: center;
+  padding: 16px 8px;
+  background: linear-gradient(135deg, #f0f9ff, #e6f5fb);
+  border-radius: 14px;
+  border: 1px solid #b3e0f2;
+}
+
+.status-value {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #2a7db5;
+}
+
+.status-label {
+  font-size: 0.75rem;
+  color: #888;
+  margin-top: 4px;
+}
+
+/* ========================
    ホーム画面
    ======================== */
 .home-container {
@@ -813,20 +911,51 @@ header h1 {
   50% { filter: drop-shadow(0 0 25px rgba(100, 200, 100, 0.7)); transform: scale(1.05); }
 }
 
+.gacha-btn-group {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
 .gacha-pull-btn {
-  display: block;
-  width: 100%;
-  padding: 16px;
+  padding: 14px 8px;
   background: linear-gradient(135deg, #4a9e6a, #2d7a4a);
   color: white;
   border: none;
-  border-radius: 16px;
-  font-size: 1.1rem;
+  border-radius: 14px;
+  font-size: 0.95rem;
   font-weight: bold;
   cursor: pointer;
   transition: all 0.2s;
   box-shadow: 0 4px 15px rgba(74, 158, 106, 0.4);
 }
+
+.gacha-multi-result {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 6px;
+  margin-bottom: 16px;
+}
+
+.gacha-mini-card {
+  text-align: center;
+  padding: 8px 4px;
+  border-radius: 10px;
+  border: 2px solid #ddd;
+  font-size: 0.65rem;
+}
+
+.gacha-mini-card img {
+  width: 100%;
+  border-radius: 6px;
+  margin-bottom: 2px;
+}
+
+.gacha-mini-card.rarity-normal { border-color: #aab0b5; background: #f5f6f7; }
+.gacha-mini-card.rarity-rare { border-color: #5aaad4; background: #e8f4fc; }
+.gacha-mini-card.rarity-superrare { border-color: #e6a800; background: #fffbe6; }
+.gacha-mini-card.rarity-legendary { border-color: #a040d0; background: #f5e6ff; }
 
 .gacha-pull-btn:hover {
   transform: translateY(-2px);

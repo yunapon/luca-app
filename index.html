@@ -8,8 +8,20 @@
 </head>
 <body>
 
+  <!-- ログイン画面 -->
+  <div id="login-page" class="full-page active">
+    <div class="home-container">
+      <img src="luca.png" alt="LUCA" class="home-icon" />
+      <h1 class="home-title">LUCA</h1>
+      <p class="home-subtitle">おかえりにゃ！<ruby>名前<rt>なまえ</rt></ruby>を<ruby>入力<rt>にゅうりょく</rt></ruby>してにゃ！</p>
+      <input id="login-name" type="text" class="login-input" placeholder="なまえを入れてね" maxlength="12" />
+      <button id="login-btn" class="start-btn">ログイン</button>
+      <div id="saved-users" class="saved-users"></div>
+    </div>
+  </div>
+
   <!-- ホーム画面 -->
-  <div id="home-page" class="full-page active">
+  <div id="home-page" class="full-page">
     <div class="home-container">
       <img src="luca.png" alt="LUCA" class="home-icon" />
       <h1 class="home-title">LUCA</h1>
@@ -20,8 +32,50 @@
       <button id="gacha-btn" class="gacha-home-btn">🌳 <ruby>世界樹<rt>せかいじゅ</rt></ruby>ガチャ（30pt）</button>
       <button id="collection-btn" class="manage-link-btn">コレクション（<span id="col-count">0</span> / <span id="col-total">0</span>）</button>
       <button id="manage-btn" class="manage-link-btn"><ruby>問題管理<rt>もんだいかんり</rt></ruby></button>
+      <button id="status-btn" class="manage-link-btn">ステータス</button>
       <button id="news-btn" class="news-home-btn">お<ruby>知<rt>し</rt></ruby>らせ <span id="news-badge" class="news-badge" style="display:none;"></span></button>
+      <button id="logout-btn" class="logout-btn">ログアウト</button>
     </div>
+  </div>
+
+  <!-- ステータス画面 -->
+  <div id="status-page" class="full-page">
+    <header>
+      <img src="luca.png" alt="LUCA" class="luca-icon" />
+      <h1>ステータス</h1>
+    </header>
+
+    <div class="card">
+      <div class="status-name" id="status-name"></div>
+      <div class="status-grid">
+        <div class="status-item">
+          <div class="status-value" id="stat-points">0</div>
+          <div class="status-label">ポイント</div>
+        </div>
+        <div class="status-item">
+          <div class="status-value" id="stat-total">0</div>
+          <div class="status-label"><ruby>総問題数<rt>そうもんだいすう</rt></ruby></div>
+        </div>
+        <div class="status-item">
+          <div class="status-value" id="stat-correct">0</div>
+          <div class="status-label"><ruby>正解数<rt>せいかいすう</rt></ruby></div>
+        </div>
+        <div class="status-item">
+          <div class="status-value" id="stat-rate">0%</div>
+          <div class="status-label"><ruby>正解率<rt>せいかいりつ</rt></ruby></div>
+        </div>
+        <div class="status-item">
+          <div class="status-value" id="stat-dungeon">0</div>
+          <div class="status-label">ダンジョン<ruby>勝利<rt>しょうり</rt></ruby></div>
+        </div>
+        <div class="status-item">
+          <div class="status-value" id="stat-collection">0</div>
+          <div class="status-label">コレクション</div>
+        </div>
+      </div>
+    </div>
+
+    <button class="back-btn" data-back="home-page">← ホームに<ruby>戻<rt>もど</rt></ruby>る</button>
   </div>
 
   <!-- お知らせ画面 -->
@@ -164,7 +218,14 @@
         <p class="gacha-tree-text"><ruby>世界樹<rt>せかいじゅ</rt></ruby>に<ruby>願<rt>ねが</rt></ruby>いをささげよう…</p>
       </div>
 
-      <button id="pull-gacha-btn" class="gacha-pull-btn">🌳 <ruby>世界樹<rt>せかいじゅ</rt></ruby>に<ruby>祈<rt>いの</rt></ruby>る（30pt）</button>
+      <div class="gacha-btn-group">
+        <button class="gacha-pull-btn" data-count="1">1<ruby>回<rt>かい</rt></ruby>（30pt）</button>
+        <button class="gacha-pull-btn" data-count="3">3<ruby>連<rt>れん</rt></ruby>（90pt）</button>
+        <button class="gacha-pull-btn" data-count="5">5<ruby>連<rt>れん</rt></ruby>（150pt）</button>
+        <button class="gacha-pull-btn" data-count="10">10<ruby>連<rt>れん</rt></ruby>（300pt）</button>
+      </div>
+      <!-- 連続結果表示 -->
+      <div id="gacha-multi-result" class="gacha-multi-result" style="display:none;"></div>
       <div id="gacha-error" class="gacha-error" style="display:none;"></div>
     </div>
 
@@ -203,6 +264,9 @@
           <option value="shakai"><ruby>社会<rt>しゃかい</rt></ruby></option>
         </select>
         <select id="input-level">
+          <option value="eiken5"><ruby>英検<rt>えいけん</rt></ruby>5<ruby>級<rt>きゅう</rt></ruby></option>
+          <option value="eiken4"><ruby>英検<rt>えいけん</rt></ruby>4<ruby>級<rt>きゅう</rt></ruby></option>
+          <option value="eiken3"><ruby>英検<rt>えいけん</rt></ruby>3<ruby>級<rt>きゅう</rt></ruby></option>
           <option value="e34"><ruby>小<rt>しょう</rt></ruby>3-4<ruby>年<rt>ねん</rt></ruby></option>
           <option value="e56"><ruby>小<rt>しょう</rt></ruby>5-6<ruby>年<rt>ねん</rt></ruby></option>
           <option value="m1"><ruby>中<rt>ちゅう</rt></ruby>1<ruby>年<rt>ねん</rt></ruby></option>

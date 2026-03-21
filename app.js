@@ -1,14 +1,110 @@
 const QUESTIONS_PER_QUIZ = 10;
 const POINTS_PER_CORRECT = 10;
 
-// --- ポイント管理 ---
+// ============================
+// ユーザー管理システム
+// ============================
+
+let currentUser = "";
+
+function getKey(key) {
+  return `luca_${currentUser}_${key}`;
+}
+
+function getCurrentUser() {
+  return localStorage.getItem("luca_current_user") || "";
+}
+
+function setCurrentUser(name) {
+  currentUser = name;
+  localStorage.setItem("luca_current_user", name);
+  // ユーザー一覧に追加
+  const users = getSavedUsers();
+  if (!users.includes(name)) {
+    users.push(name);
+    localStorage.setItem("luca_users", JSON.stringify(users));
+  }
+}
+
+function getSavedUsers() {
+  const saved = localStorage.getItem("luca_users");
+  return saved ? JSON.parse(saved) : [];
+}
+
+function renderSavedUsers() {
+  const container = document.getElementById("saved-users");
+  const users = getSavedUsers();
+  container.innerHTML = "";
+  if (users.length === 0) return;
+
+  const label = document.createElement("p");
+  label.style.cssText = "text-align:center; color:#888; font-size:0.85rem; margin-bottom:8px;";
+  label.textContent = "または、つづきから：";
+  container.appendChild(label);
+
+  users.forEach((name) => {
+    const btn = document.createElement("button");
+    btn.className = "saved-user-btn";
+    btn.textContent = name;
+    btn.addEventListener("click", () => {
+      loginAs(name);
+    });
+    container.appendChild(btn);
+  });
+}
+
+function loginAs(name) {
+  setCurrentUser(name);
+  updatePointDisplay();
+  updateCollectionCount();
+  checkNewsBadge();
+  document.getElementById("home-points").textContent = loadPoints() + " pt";
+  showPage("home-page");
+}
+
+// ログインボタン
+document.getElementById("login-btn").addEventListener("click", () => {
+  const name = document.getElementById("login-name").value.trim();
+  if (!name) return;
+  loginAs(name);
+});
+
+// Enterキーでもログイン
+document.getElementById("login-name").addEventListener("keydown", (e) => {
+  if (e.key === "Enter") {
+    document.getElementById("login-btn").click();
+  }
+});
+
+// ログアウト
+document.getElementById("logout-btn").addEventListener("click", () => {
+  currentUser = "";
+  localStorage.removeItem("luca_current_user");
+  document.getElementById("login-name").value = "";
+  renderSavedUsers();
+  showPage("login-page");
+});
+
+// 起動時：前回のユーザーがいればそのまま、いなければログイン画面
+(function checkAutoLogin() {
+  const saved = getCurrentUser();
+  if (saved) {
+    currentUser = saved;
+  } else {
+    renderSavedUsers();
+  }
+})();
+
+// ============================
+// ポイント管理（ユーザー別）
+// ============================
 
 function loadPoints() {
-  return parseInt(localStorage.getItem("tankogo-points") || "0", 10);
+  return parseInt(localStorage.getItem(getKey("points")) || "0", 10);
 }
 
 function savePoints(points) {
-  localStorage.setItem("tankogo-points", String(points));
+  localStorage.setItem(getKey("points"), String(points));
 }
 
 function addPoints(amount) {
@@ -33,15 +129,43 @@ function showPointPopup(amount) {
   setTimeout(() => popup.remove(), 900);
 }
 
-// --- データ管理 ---
+// ============================
+// 統計データ（ユーザー別）
+// ============================
+
+function loadStats() {
+  const saved = localStorage.getItem(getKey("stats"));
+  return saved ? JSON.parse(saved) : { total: 0, correct: 0, dungeonWins: 0 };
+}
+
+function saveStats(stats) {
+  localStorage.setItem(getKey("stats"), JSON.stringify(stats));
+}
+
+function recordAnswer(isCorrect) {
+  const stats = loadStats();
+  stats.total++;
+  if (isCorrect) stats.correct++;
+  saveStats(stats);
+}
+
+function recordDungeonWin() {
+  const stats = loadStats();
+  stats.dungeonWins++;
+  saveStats(stats);
+}
+
+// ============================
+// データ管理（ユーザー別）
+// ============================
 
 function loadUserWords() {
-  const saved = localStorage.getItem("tankogo-user-words");
+  const saved = localStorage.getItem(getKey("user-words"));
   return saved ? JSON.parse(saved) : [];
 }
 
 function saveUserWords(words) {
-  localStorage.setItem("tankogo-user-words", JSON.stringify(words));
+  localStorage.setItem(getKey("user-words"), JSON.stringify(words));
 }
 
 function loadWords() {
@@ -137,7 +261,7 @@ document.querySelectorAll(".back-btn").forEach((btn) => {
 document.getElementById("news-btn").addEventListener("click", () => {
   renderNews();
   // 既読にする
-  localStorage.setItem("tankogo-news-read", NEWS_DATA[0].id);
+  localStorage.setItem(getKey("news-read"), NEWS_DATA[0].id);
   document.getElementById("news-badge").style.display = "none";
   showPage("news-page");
 });
@@ -172,7 +296,7 @@ function renderNews() {
 }
 
 function checkNewsBadge() {
-  const lastRead = localStorage.getItem("tankogo-news-read") || "";
+  const lastRead = localStorage.getItem(getKey("news-read")) || "";
   if (NEWS_DATA.length > 0 && NEWS_DATA[0].id !== lastRead) {
     const badge = document.getElementById("news-badge");
     badge.textContent = "NEW";
@@ -180,10 +304,15 @@ function checkNewsBadge() {
   }
 }
 
-// 起動時にポイント・コレクション・お知らせバッジを更新
-updatePointDisplay();
-updateCollectionCount();
-checkNewsBadge();
+// 起動時：ログイン済みならホームへ
+if (currentUser) {
+  updatePointDisplay();
+  updateCollectionCount();
+  checkNewsBadge();
+  showPage("home-page");
+} else {
+  renderSavedUsers();
+}
 
 // ホーム → ダンジョン選択
 document.getElementById("dungeon-btn").addEventListener("click", () => {
@@ -309,6 +438,8 @@ function handleBattleAnswer(selected, correct) {
   const answerMsg = document.getElementById("battle-answer-msg");
   answerArea.style.display = "block";
 
+  recordAnswer(isCorrect);
+
   if (isCorrect) {
     bossHp -= DAMAGE_PER_CORRECT;
     answerMsg.innerHTML = `⚔️ ${DAMAGE_PER_CORRECT}ダメージ！（<ruby>正解<rt>せいかい</rt></ruby>：${correct}）`;
@@ -359,6 +490,7 @@ function showDungeonResult(victory) {
     addPoints(reward);
     updatePointDisplay();
 
+    recordDungeonWin();
     msgEl.innerHTML = "🎉 <ruby>勝利<rt>しょうり</rt></ruby>！！";
     msgEl.style.color = "#d4a017";
     detailEl.innerHTML = `${currentDungeon.bossName}を<ruby>倒<rt>たお</rt></ruby>した！<br>+${reward} pt ゲット！`;
@@ -415,53 +547,82 @@ document.getElementById("collection-btn").addEventListener("click", () => {
   showPage("collection-page");
 });
 
-// ガチャを回す
-document.getElementById("pull-gacha-btn").addEventListener("click", () => {
-  const points = loadPoints();
-  const errorEl = document.getElementById("gacha-error");
+// ガチャを回す（連続対応）
+document.querySelectorAll(".gacha-pull-btn").forEach((btn) => {
+  btn.addEventListener("click", () => {
+    const count = parseInt(btn.dataset.count);
+    const totalCost = GACHA_COST * count;
+    const points = loadPoints();
+    const errorEl = document.getElementById("gacha-error");
 
-  if (points < GACHA_COST) {
-    errorEl.innerHTML = "ポイントが<ruby>足<rt>た</rt></ruby>りないにゃ…<ruby>勉強<rt>べんきょう</rt></ruby>してポイントを<ruby>貯<rt>た</rt></ruby>めよう！";
-    errorEl.style.display = "block";
-    return;
-  }
+    if (points < totalCost) {
+      errorEl.innerHTML = "ポイントが<ruby>足<rt>た</rt></ruby>りないにゃ…<ruby>勉強<rt>べんきょう</rt></ruby>してポイントを<ruby>貯<rt>た</rt></ruby>めよう！";
+      errorEl.style.display = "block";
+      return;
+    }
 
-  errorEl.style.display = "none";
+    errorEl.style.display = "none";
 
-  // ポイント消費
-  savePoints(points - GACHA_COST);
-  document.getElementById("gacha-pt").textContent = loadPoints();
-  updatePointDisplay();
+    // ポイント消費
+    savePoints(points - totalCost);
+    document.getElementById("gacha-pt").textContent = loadPoints();
+    updatePointDisplay();
 
-  // ガチャ実行
-  const card = rollGacha();
-  addToCollection(card.id);
-  updateCollectionCount();
+    // ガチャ実行
+    const cards = [];
+    for (let i = 0; i < count; i++) {
+      const card = rollGacha();
+      addToCollection(card.id);
+      cards.push(card);
+    }
+    updateCollectionCount();
 
-  // 結果表示
-  const rarity = RARITIES[card.rarity];
-  document.getElementById("gacha-intro").style.display = "none";
-  const resultEl = document.getElementById("gacha-result");
-  resultEl.style.display = "block";
-  resultEl.style.animation = "none";
-  // アニメーションリセット
-  setTimeout(() => { resultEl.style.animation = ""; }, 10);
+    document.getElementById("gacha-intro").style.display = "none";
 
-  const rarityLabel = document.getElementById("gacha-rarity-label");
-  rarityLabel.innerHTML = rarity.name;
-  rarityLabel.style.backgroundColor = rarity.bgColor;
-  rarityLabel.style.color = rarity.color;
+    if (count === 1) {
+      // 1回：大きく表示
+      document.getElementById("gacha-multi-result").style.display = "none";
+      const card = cards[0];
+      const rarity = RARITIES[card.rarity];
+      const resultEl = document.getElementById("gacha-result");
+      resultEl.style.display = "block";
+      resultEl.style.animation = "none";
+      setTimeout(() => { resultEl.style.animation = ""; }, 10);
 
-  const display = document.getElementById("gacha-card-display");
-  display.className = "gacha-card-display rarity-" + card.rarity;
-  const iconEl = document.getElementById("gacha-card-icon");
-  if (card.image) {
-    iconEl.innerHTML = `<img src="${card.image}" alt="${card.name}" class="gacha-card-img" />`;
-  } else {
-    iconEl.textContent = card.icon;
-  }
-  document.getElementById("gacha-card-name").innerHTML = card.name;
-  document.getElementById("gacha-card-desc").innerHTML = card.description;
+      const rarityLabel = document.getElementById("gacha-rarity-label");
+      rarityLabel.innerHTML = rarity.name;
+      rarityLabel.style.backgroundColor = rarity.bgColor;
+      rarityLabel.style.color = rarity.color;
+
+      const display = document.getElementById("gacha-card-display");
+      display.className = "gacha-card-display rarity-" + card.rarity;
+      const iconEl = document.getElementById("gacha-card-icon");
+      if (card.image) {
+        iconEl.innerHTML = `<img src="${card.image}" alt="${card.name}" class="gacha-card-img" />`;
+      } else {
+        iconEl.textContent = card.icon;
+      }
+      document.getElementById("gacha-card-name").innerHTML = card.name;
+      document.getElementById("gacha-card-desc").innerHTML = card.description;
+    } else {
+      // 複数回：グリッド表示
+      document.getElementById("gacha-result").style.display = "none";
+      const multiEl = document.getElementById("gacha-multi-result");
+      multiEl.style.display = "grid";
+      multiEl.innerHTML = "";
+
+      cards.forEach((card) => {
+        const rarity = RARITIES[card.rarity];
+        const div = document.createElement("div");
+        div.className = `gacha-mini-card rarity-${card.rarity}`;
+        const iconHtml = card.image
+          ? `<img src="${card.image}" alt="${card.name}" />`
+          : `<div style="font-size:1.5rem;">${card.icon}</div>`;
+        div.innerHTML = `${iconHtml}<div>${card.name}</div>`;
+        multiEl.appendChild(div);
+      });
+    }
+  });
 });
 
 function openGachaPage() {
@@ -501,6 +662,24 @@ function renderCollection() {
     `;
     grid.appendChild(div);
   });
+}
+
+// ホーム → ステータス
+document.getElementById("status-btn").addEventListener("click", () => {
+  renderStatus();
+  showPage("status-page");
+});
+
+function renderStatus() {
+  const stats = loadStats();
+  const rate = stats.total > 0 ? Math.round((stats.correct / stats.total) * 100) : 0;
+  document.getElementById("status-name").textContent = currentUser;
+  document.getElementById("stat-points").textContent = loadPoints();
+  document.getElementById("stat-total").textContent = stats.total;
+  document.getElementById("stat-correct").textContent = stats.correct;
+  document.getElementById("stat-rate").textContent = rate + "%";
+  document.getElementById("stat-dungeon").textContent = stats.dungeonWins || 0;
+  document.getElementById("stat-collection").textContent = getCollectionCount();
 }
 
 // ホーム → 教科選択
@@ -718,6 +897,8 @@ function handleAnswer(selected, correct, meaning, wordIndex) {
   const detail = document.getElementById("answer-detail");
 
   answerArea.style.display = "block";
+
+  recordAnswer(isCorrect);
 
   if (isCorrect) {
     addPoints(POINTS_PER_CORRECT);
