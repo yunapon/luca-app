@@ -1,0 +1,1110 @@
+/* 全体のリセットと基本設定 */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --dot-color1: #b3e0f2;
+  --dot-color2: #87ceeb;
+  --dot-color3: #d6f0fa;
+}
+
+body {
+  min-height: 100vh;
+  font-family: 'Helvetica Neue', Arial, 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', Meiryo, sans-serif;
+  background-color: #ffffff;
+  background-image:
+    radial-gradient(circle, var(--dot-color1) 18px, transparent 18px),
+    radial-gradient(circle, var(--dot-color2) 10px, transparent 10px),
+    radial-gradient(circle, var(--dot-color3) 14px, transparent 14px),
+    radial-gradient(circle, var(--dot-color2) 8px, transparent 8px);
+  background-size: 120px 120px, 80px 80px, 100px 100px, 60px 60px;
+  background-position: 0 0, 40px 40px, 20px 60px, 70px 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  transition: background-image 0.3s;
+}
+
+/* ページ切替 */
+.full-page {
+  display: none;
+  width: 100%;
+  max-width: 480px;
+  flex-direction: column;
+  align-items: center;
+}
+
+.full-page.active {
+  display: flex;
+}
+
+/* ========================
+   ホーム画面
+   ======================== */
+.home-container {
+  text-align: center;
+  margin-top: 40px;
+}
+
+.home-icon {
+  width: 180px;
+  height: 180px;
+  border-radius: 24px;
+  object-fit: cover;
+  box-shadow: 0 6px 30px rgba(135, 206, 235, 0.5);
+  margin-bottom: 20px;
+}
+
+.home-title {
+  font-size: 2.4rem;
+  color: #1b3a5c;
+  letter-spacing: 4px;
+  margin-bottom: 8px;
+}
+
+.home-subtitle {
+  color: #1b3a5c;
+  font-size: 1rem;
+  margin-bottom: 32px;
+  font-weight: bold;
+}
+
+/* ポイント表示 */
+.point-display {
+  background: linear-gradient(135deg, #ffd700, #ffaa00);
+  color: white;
+  font-size: 1.3rem;
+  font-weight: bold;
+  padding: 10px 24px;
+  border-radius: 30px;
+  margin-bottom: 20px;
+  display: inline-block;
+  box-shadow: 0 3px 12px rgba(255, 170, 0, 0.4);
+  letter-spacing: 2px;
+}
+
+.point-earned {
+  text-align: center;
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: #e6a800;
+  margin-top: 12px;
+  margin-bottom: 8px;
+}
+
+.point-popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  background: linear-gradient(135deg, #ffd700, #ffaa00);
+  color: white;
+  font-size: 1.4rem;
+  font-weight: bold;
+  padding: 12px 28px;
+  border-radius: 20px;
+  box-shadow: 0 4px 20px rgba(255, 170, 0, 0.5);
+  z-index: 100;
+  animation: pointPop 0.8s ease-out forwards;
+  pointer-events: none;
+}
+
+@keyframes pointPop {
+  0% { transform: translate(-50%, -50%) scale(0); opacity: 1; }
+  40% { transform: translate(-50%, -50%) scale(1.2); opacity: 1; }
+  60% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+  100% { transform: translate(-50%, -70%) scale(1); opacity: 0; }
+}
+
+.start-btn {
+  display: block;
+  width: 100%;
+  padding: 16px 40px;
+  background-color: #5aaad4;
+  color: white;
+  border: none;
+  border-radius: 30px;
+  font-size: 1.2rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 4px 15px rgba(90, 170, 212, 0.4);
+  margin-bottom: 12px;
+}
+
+.start-btn:hover {
+  background-color: #3a8ab4;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(90, 170, 212, 0.5);
+}
+
+.manage-link-btn {
+  display: block;
+  width: 100%;
+  padding: 14px 40px;
+  background-color: transparent;
+  color: #5aaad4;
+  border: 2px solid #b3e0f2;
+  border-radius: 30px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.manage-link-btn:hover {
+  background-color: #e6f5fb;
+}
+
+/* お知らせボタン */
+.news-home-btn {
+  display: block;
+  width: 100%;
+  padding: 14px 40px;
+  background-color: transparent;
+  color: #5aaad4;
+  border: 2px solid #b3e0f2;
+  border-radius: 30px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  position: relative;
+}
+
+.news-home-btn:hover {
+  background-color: #e6f5fb;
+}
+
+.news-badge {
+  background-color: #e04040;
+  color: white;
+  font-size: 0.7rem;
+  font-weight: bold;
+  padding: 2px 8px;
+  border-radius: 10px;
+  margin-left: 6px;
+}
+
+/* ========================
+   お知らせ画面
+   ======================== */
+.news-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.news-item {
+  border: 1px solid #e0e0e0;
+  border-radius: 14px;
+  padding: 16px;
+  background-color: #fafcff;
+  transition: all 0.2s;
+}
+
+.news-item-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.news-tag {
+  font-size: 0.7rem;
+  font-weight: bold;
+  color: white;
+  padding: 2px 10px;
+  border-radius: 10px;
+}
+
+.news-date {
+  font-size: 0.75rem;
+  color: #aaa;
+}
+
+.news-title {
+  font-size: 1rem;
+  font-weight: bold;
+  color: #1b3a5c;
+  margin-bottom: 8px;
+  cursor: pointer;
+}
+
+.news-body {
+  font-size: 0.85rem;
+  color: #555;
+  line-height: 1.6;
+  white-space: pre-line;
+  display: none;
+}
+
+.news-body.open {
+  display: block;
+}
+
+.news-toggle {
+  font-size: 0.75rem;
+  color: #5aaad4;
+  cursor: pointer;
+  border: none;
+  background: none;
+  padding: 4px 0;
+}
+
+.news-toggle:hover {
+  text-decoration: underline;
+}
+
+/* ========================
+   教科選択・レベル選択画面
+   ======================== */
+.page-title {
+  text-align: center;
+  color: #1b3a5c;
+  font-size: 1.3rem;
+  margin-bottom: 24px;
+}
+
+.subject-buttons,
+.level-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.subject-btn,
+.level-select-btn {
+  padding: 18px 20px;
+  border: 2px solid #b3e0f2;
+  border-radius: 16px;
+  background-color: rgba(255, 255, 255, 0.8);
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: #2a7db5;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: left;
+}
+
+.subject-btn:hover,
+.level-select-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(90, 170, 212, 0.3);
+}
+
+/* 教科ボタンの色 */
+.subject-btn[data-subject="english"] { border-color: #87ceeb; }
+.subject-btn[data-subject="english"]:hover { background-color: #e6f5fb; }
+
+.subject-btn[data-subject="kokugo"] { border-color: #eb87b8; }
+.subject-btn[data-subject="kokugo"]:hover { background-color: #fde6f0; }
+
+.subject-btn[data-subject="rika"] { border-color: #87eb9e; }
+.subject-btn[data-subject="rika"]:hover { background-color: #e6fbe9; }
+
+.subject-btn[data-subject="sansu"] { border-color: #878eeb; }
+.subject-btn[data-subject="sansu"]:hover { background-color: #e6e8fb; }
+
+.subject-btn[data-subject="shakai"] { border-color: #ebd487; }
+.subject-btn[data-subject="shakai"]:hover { background-color: #fbf5e6; }
+
+/* 戻るボタン */
+.back-btn {
+  margin-top: 20px;
+  padding: 10px 24px;
+  background: none;
+  border: none;
+  color: #5aaad4;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.back-btn:hover {
+  color: #2a7db5;
+}
+
+/* ========================
+   LUCAアイコン（小さいヘッダー用）
+   ======================== */
+.luca-icon {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 8px;
+  box-shadow: 0 2px 10px rgba(135, 206, 235, 0.4);
+}
+
+/* ヘッダー */
+header {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+header h1 {
+  font-size: 1.8rem;
+  color: #1b3a5c;
+  text-shadow: 1px 1px 0 #ffffff;
+  letter-spacing: 2px;
+}
+
+/* メインカード */
+.card {
+  background-color: rgba(255, 255, 255, 0.88);
+  border-radius: 20px;
+  padding: 32px 28px;
+  width: 100%;
+  max-width: 480px;
+  box-shadow: 0 4px 20px rgba(135, 206, 235, 0.3);
+}
+
+/* 単語リストのレベルバッジ */
+.level-badge {
+  display: inline-block;
+  font-size: 0.65rem;
+  padding: 2px 6px;
+  border-radius: 8px;
+  margin-right: 4px;
+  font-weight: bold;
+}
+
+.level-badge.sub-english { background-color: #ddeeff; color: #2a5a90; }
+.level-badge.sub-kokugo { background-color: #ffe0ee; color: #90305a; }
+.level-badge.sub-rika { background-color: #d4f4e7; color: #2a7a50; }
+.level-badge.sub-sansu { background-color: #e0e0ff; color: #3030a0; }
+.level-badge.sub-shakai { background-color: #fff0cc; color: #996600; }
+
+/* フォームのセレクト */
+#input-level,
+#input-subject {
+  padding: 10px 14px;
+  border: 2px solid #b3e0f2;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  color: #333;
+  outline: none;
+  background-color: white;
+}
+
+#input-level:focus,
+#input-subject:focus {
+  border-color: #5aaad4;
+}
+
+/* ========================
+   クイズページ
+   ======================== */
+#quiz-label {
+  text-align: center;
+  color: #88bbcc;
+  font-size: 0.85rem;
+  margin-bottom: 6px;
+}
+
+#quiz-word {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #2a7db5;
+  text-align: center;
+  margin-bottom: 8px;
+  letter-spacing: 2px;
+  line-height: 1.5;
+}
+
+#quiz-count {
+  text-align: center;
+  color: #88bbcc;
+  font-size: 0.85rem;
+  margin-bottom: 28px;
+}
+
+.choices {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.choice-btn {
+  padding: 14px 20px;
+  border: 2px solid #b3e0f2;
+  border-radius: 14px;
+  background-color: rgba(255, 255, 255, 0.8);
+  font-size: 1rem;
+  color: #2a7db5;
+  cursor: pointer;
+  transition: all 0.15s;
+  text-align: left;
+}
+
+.choice-btn:hover:not(:disabled) {
+  background-color: #e6f5fb;
+  border-color: #5aaad4;
+}
+
+.choice-btn.correct {
+  background-color: #d4f4e7;
+  border-color: #4caf82;
+  color: #2a7a50;
+}
+
+.choice-btn.wrong {
+  background-color: #fde8e8;
+  border-color: #e08080;
+  color: #a03030;
+}
+
+/* 答え表示エリア */
+#answer-area {
+  margin-top: 20px;
+  padding: 16px;
+  border-radius: 14px;
+  background-color: #f0f9ff;
+  border: 2px solid #b3e0f2;
+  text-align: center;
+  display: none;
+}
+
+#answer-message {
+  font-size: 1.1rem;
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
+#answer-detail {
+  color: #444;
+  font-size: 0.95rem;
+}
+
+#next-btn {
+  margin-top: 16px;
+  padding: 12px 32px;
+  background-color: #5aaad4;
+  color: white;
+  border: none;
+  border-radius: 24px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+#next-btn:hover {
+  background-color: #3a8ab4;
+}
+
+/* 結果画面ボタン */
+.result-btn {
+  padding: 14px;
+  border: none;
+  border-radius: 14px;
+  font-size: 1rem;
+  cursor: pointer;
+  width: 100%;
+  background-color: #5aaad4;
+  color: white;
+  margin-bottom: 10px;
+  transition: background-color 0.2s;
+}
+
+.result-btn:hover {
+  background-color: #3a8ab4;
+}
+
+.result-btn.retry {
+  background-color: #e08080;
+}
+
+.result-btn.retry:hover {
+  background-color: #c05050;
+}
+
+.result-btn.home {
+  background-color: transparent;
+  color: #5aaad4;
+  border: 2px solid #b3e0f2;
+}
+
+.result-btn.home:hover {
+  background-color: #e6f5fb;
+}
+
+/* ========================
+   ダンジョン選択画面
+   ======================== */
+.dungeon-home-btn {
+  display: block;
+  width: 100%;
+  padding: 14px 40px;
+  background: linear-gradient(135deg, #d44a4a, #a03030);
+  color: white;
+  border: none;
+  border-radius: 30px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 4px 15px rgba(160, 48, 48, 0.4);
+  margin-bottom: 12px;
+}
+
+.dungeon-home-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(160, 48, 48, 0.5);
+}
+
+.dungeon-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.dungeon-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  border: 2px solid #ddd;
+  border-radius: 14px;
+  background-color: rgba(255, 255, 255, 0.8);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.dungeon-item:hover {
+  border-color: #d44a4a;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(160, 48, 48, 0.2);
+}
+
+.dungeon-item-icon {
+  font-size: 2rem;
+}
+
+.dungeon-item-info {
+  flex: 1;
+}
+
+.dungeon-item-name {
+  font-size: 1rem;
+  font-weight: bold;
+  color: #1b3a5c;
+}
+
+.dungeon-item-desc {
+  font-size: 0.75rem;
+  color: #888;
+  margin-top: 2px;
+}
+
+.dungeon-item-reward {
+  font-size: 0.7rem;
+  color: #e6a800;
+  font-weight: bold;
+  margin-top: 4px;
+}
+
+/* ========================
+   ダンジョンバトル画面
+   ======================== */
+.battle-card {
+  position: relative;
+}
+
+.boss-area {
+  text-align: center;
+  margin-bottom: 16px;
+  padding: 12px;
+  background: linear-gradient(135deg, #2a1a2e, #3a2040);
+  border-radius: 14px;
+}
+
+.boss-icon {
+  font-size: 3.5rem;
+  animation: bossIdle 2s infinite;
+}
+
+@keyframes bossIdle {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+
+.boss-name {
+  color: #ff6666;
+  font-weight: bold;
+  font-size: 1rem;
+  margin-top: 4px;
+  margin-bottom: 8px;
+}
+
+.hp-bar-container {
+  background-color: #333;
+  border-radius: 10px;
+  height: 14px;
+  overflow: hidden;
+  margin: 0 20px;
+}
+
+.hp-bar {
+  height: 100%;
+  border-radius: 10px;
+  transition: width 0.5s ease;
+}
+
+.boss-hp-bar {
+  background: linear-gradient(90deg, #ff4444, #ff8844);
+  width: 100%;
+}
+
+.player-area {
+  text-align: center;
+  margin-bottom: 16px;
+  padding: 8px;
+}
+
+.player-label {
+  font-weight: bold;
+  color: #1b3a5c;
+  margin-bottom: 6px;
+}
+
+.player-hp-bar {
+  background: linear-gradient(90deg, #44cc66, #66ee88);
+  width: 100%;
+}
+
+.hp-text {
+  font-size: 0.75rem;
+  color: #888;
+  text-align: center;
+  margin-top: 4px;
+}
+
+.battle-question {
+  text-align: center;
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #2a7db5;
+  margin-bottom: 16px;
+  min-height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1.5;
+}
+
+.battle-answer-area {
+  text-align: center;
+  margin-top: 16px;
+  padding: 12px;
+  border-radius: 12px;
+  font-weight: bold;
+}
+
+.battle-next-btn {
+  margin-top: 10px;
+  padding: 10px 28px;
+  background-color: #5aaad4;
+  color: white;
+  border: none;
+  border-radius: 20px;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.battle-next-btn:hover {
+  background-color: #3a8ab4;
+}
+
+.battle-message {
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 12px;
+}
+
+.battle-detail {
+  text-align: center;
+  color: #666;
+  margin-bottom: 16px;
+}
+
+@keyframes bossHit {
+  0% { transform: translateX(0); }
+  20% { transform: translateX(-15px); }
+  40% { transform: translateX(15px); }
+  60% { transform: translateX(-10px); }
+  80% { transform: translateX(10px); }
+  100% { transform: translateX(0); }
+}
+
+@keyframes playerHit {
+  0%, 100% { opacity: 1; }
+  25% { opacity: 0.3; }
+  50% { opacity: 1; }
+  75% { opacity: 0.3; }
+}
+
+.boss-hit {
+  animation: bossHit 0.5s ease;
+}
+
+.player-hit {
+  animation: playerHit 0.6s ease;
+}
+
+/* ========================
+   ガチャ画面
+   ======================== */
+.gacha-home-btn {
+  display: block;
+  width: 100%;
+  padding: 14px 40px;
+  background: linear-gradient(135deg, #4a9e6a, #2d7a4a);
+  color: white;
+  border: none;
+  border-radius: 30px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 4px 15px rgba(74, 158, 106, 0.4);
+  margin-bottom: 12px;
+}
+
+.gacha-home-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(74, 158, 106, 0.5);
+}
+
+.gacha-points {
+  text-align: center;
+  font-size: 1rem;
+  color: #666;
+  margin-bottom: 20px;
+  font-weight: bold;
+}
+
+.gacha-intro {
+  text-align: center;
+  padding: 30px 0;
+}
+
+.gacha-tree-img {
+  width: 100%;
+  max-width: 360px;
+  border-radius: 16px;
+  margin-bottom: 12px;
+  animation: treeGlow 3s infinite;
+  box-shadow: 0 4px 20px rgba(100, 200, 100, 0.4);
+}
+
+.gacha-tree-text {
+  color: #4a7a5a;
+  font-weight: bold;
+  font-style: italic;
+}
+
+@keyframes treeGlow {
+  0%, 100% { filter: drop-shadow(0 0 10px rgba(100, 200, 100, 0.3)); transform: scale(1); }
+  50% { filter: drop-shadow(0 0 25px rgba(100, 200, 100, 0.7)); transform: scale(1.05); }
+}
+
+.gacha-pull-btn {
+  display: block;
+  width: 100%;
+  padding: 16px;
+  background: linear-gradient(135deg, #4a9e6a, #2d7a4a);
+  color: white;
+  border: none;
+  border-radius: 16px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 4px 15px rgba(74, 158, 106, 0.4);
+}
+
+.gacha-pull-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(74, 158, 106, 0.5);
+}
+
+.gacha-pull-btn:disabled {
+  background: #ccc;
+  box-shadow: none;
+  transform: none;
+  cursor: not-allowed;
+}
+
+.gacha-error {
+  text-align: center;
+  color: #e08080;
+  font-size: 0.9rem;
+  margin-top: 10px;
+  font-weight: bold;
+}
+
+/* ガチャ結果 */
+.gacha-result {
+  text-align: center;
+  margin-bottom: 20px;
+  animation: cardReveal 0.6s ease-out;
+}
+
+@keyframes cardReveal {
+  0% { transform: scale(0) rotateY(180deg); opacity: 0; }
+  60% { transform: scale(1.1) rotateY(0); opacity: 1; }
+  100% { transform: scale(1) rotateY(0); opacity: 1; }
+}
+
+.gacha-rarity-label {
+  font-size: 1rem;
+  font-weight: bold;
+  padding: 4px 16px;
+  border-radius: 20px;
+  display: inline-block;
+  margin-bottom: 16px;
+}
+
+.gacha-card-display {
+  padding: 24px;
+  border-radius: 16px;
+  border: 3px solid #ddd;
+}
+
+.gacha-card-icon {
+  font-size: 4rem;
+  margin-bottom: 8px;
+}
+
+.gacha-card-img {
+  width: 100%;
+  max-width: 320px;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.gacha-card-name {
+  font-size: 1.3rem;
+  font-weight: bold;
+  color: #1b3a5c;
+  margin-bottom: 6px;
+}
+
+.gacha-card-desc {
+  font-size: 0.9rem;
+  color: #666;
+}
+
+/* レアリティ別のキラキラ */
+.gacha-card-display.rarity-normal {
+  border-color: #aab0b5;
+  background-color: #f5f6f7;
+}
+
+.gacha-card-display.rarity-rare {
+  border-color: #5aaad4;
+  background: linear-gradient(135deg, #e8f4fc, #ddf0fa);
+  box-shadow: 0 0 15px rgba(90, 170, 212, 0.3);
+}
+
+.gacha-card-display.rarity-superrare {
+  border-color: #e6a800;
+  background: linear-gradient(135deg, #fffbe6, #fff5d6);
+  box-shadow: 0 0 20px rgba(230, 168, 0, 0.4);
+  animation: cardReveal 0.6s ease-out, shimmerGold 2s infinite;
+}
+
+.gacha-card-display.rarity-legendary {
+  border-color: #a040d0;
+  background: linear-gradient(135deg, #f5e6ff, #ede0ff, #e6f0ff);
+  box-shadow: 0 0 30px rgba(160, 64, 208, 0.5);
+  animation: cardReveal 0.6s ease-out, shimmerLegend 2s infinite;
+}
+
+@keyframes shimmerGold {
+  0%, 100% { box-shadow: 0 0 20px rgba(230, 168, 0, 0.4); }
+  50% { box-shadow: 0 0 30px rgba(230, 168, 0, 0.7); }
+}
+
+@keyframes shimmerLegend {
+  0%, 100% { box-shadow: 0 0 25px rgba(160, 64, 208, 0.5); }
+  50% { box-shadow: 0 0 40px rgba(160, 64, 208, 0.8); }
+}
+
+/* ========================
+   コレクション画面
+   ======================== */
+.collection-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.col-card {
+  text-align: center;
+  padding: 12px 6px;
+  border-radius: 12px;
+  border: 2px solid #ddd;
+  background-color: #f5f6f7;
+  position: relative;
+}
+
+.col-card.owned {
+  border-color: #5aaad4;
+  background-color: #f0f9ff;
+}
+
+.col-card.not-owned {
+  opacity: 0.4;
+  filter: grayscale(1);
+}
+
+.col-card-icon {
+  font-size: 2rem;
+  margin-bottom: 4px;
+}
+
+.col-card-img {
+  width: 100%;
+  border-radius: 8px;
+  margin-bottom: 4px;
+}
+
+.col-card-emoji {
+  font-size: 2rem;
+  margin-bottom: 4px;
+}
+
+.col-card-name {
+  font-size: 0.7rem;
+  font-weight: bold;
+  color: #1b3a5c;
+}
+
+.col-card-count {
+  font-size: 0.65rem;
+  color: #888;
+  margin-top: 2px;
+}
+
+.col-card-rarity {
+  font-size: 0.55rem;
+  font-weight: bold;
+  padding: 1px 6px;
+  border-radius: 8px;
+  display: inline-block;
+  margin-top: 4px;
+}
+
+/* コレクション用レアリティ色 */
+.col-card.rarity-normal .col-card-rarity { background: #e8eaec; color: #777; }
+.col-card.rarity-rare .col-card-rarity { background: #ddf0fa; color: #2a7db5; }
+.col-card.rarity-superrare .col-card-rarity { background: #fff5d6; color: #b88400; }
+.col-card.rarity-legendary .col-card-rarity { background: #f0e0ff; color: #7030a0; }
+
+.col-card.rarity-rare.owned { border-color: #5aaad4; }
+.col-card.rarity-superrare.owned { border-color: #e6a800; }
+.col-card.rarity-legendary.owned { border-color: #a040d0; }
+
+/* ========================
+   問題管理ページ
+   ======================== */
+#word-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 24px;
+}
+
+#word-form input {
+  padding: 10px 14px;
+  border: 2px solid #b3e0f2;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  color: #333;
+  outline: none;
+}
+
+#word-form input:focus {
+  border-color: #5aaad4;
+}
+
+#word-form button {
+  padding: 12px;
+  background-color: #5aaad4;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+#word-form button:hover {
+  background-color: #3a8ab4;
+}
+
+#word-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+#word-list li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 14px;
+  background-color: #f0f9ff;
+  border-radius: 10px;
+  border: 1px solid #b3e0f2;
+  font-size: 0.85rem;
+  color: #2a7db5;
+}
+
+.delete-btn {
+  background: none;
+  border: none;
+  color: #e08080;
+  font-size: 1.1rem;
+  cursor: pointer;
+  padding: 0 4px;
+}
+
+.delete-btn:hover {
+  color: #c05050;
+}
+
+/* ========================
+   レスポンシブ対応
+   ======================== */
+@media (max-width: 500px) {
+  .home-title {
+    font-size: 2rem;
+  }
+
+  .home-icon {
+    width: 150px;
+    height: 150px;
+  }
+
+  header h1 {
+    font-size: 1.4rem;
+  }
+
+  #quiz-word {
+    font-size: 1.6rem;
+  }
+
+  .card {
+    padding: 24px 18px;
+  }
+}

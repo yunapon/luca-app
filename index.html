@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LUCA - ブルーキャットの単語帳</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ホーム画面 -->
+  <div id="home-page" class="full-page active">
+    <div class="home-container">
+      <img src="luca.png" alt="LUCA" class="home-icon" />
+      <h1 class="home-title">LUCA</h1>
+      <p class="home-subtitle">ブルーキャットと<ruby>一緒<rt>いっしょ</rt></ruby>に<ruby>勉強<rt>べんきょう</rt></ruby>しよう！</p>
+      <div class="point-display" id="home-points">0 pt</div>
+      <button id="start-btn" class="start-btn"><ruby>学習<rt>がくしゅう</rt></ruby>を<ruby>始<rt>はじ</rt></ruby>める</button>
+      <button id="dungeon-btn" class="dungeon-home-btn">⚔️ ダンジョン<ruby>攻略<rt>こうりゃく</rt></ruby></button>
+      <button id="gacha-btn" class="gacha-home-btn">🌳 <ruby>世界樹<rt>せかいじゅ</rt></ruby>ガチャ（30pt）</button>
+      <button id="collection-btn" class="manage-link-btn">コレクション（<span id="col-count">0</span> / <span id="col-total">0</span>）</button>
+      <button id="manage-btn" class="manage-link-btn"><ruby>問題管理<rt>もんだいかんり</rt></ruby></button>
+      <button id="news-btn" class="news-home-btn">お<ruby>知<rt>し</rt></ruby>らせ <span id="news-badge" class="news-badge" style="display:none;"></span></button>
+    </div>
+  </div>
+
+  <!-- お知らせ画面 -->
+  <div id="news-page" class="full-page">
+    <header>
+      <img src="luca.png" alt="LUCA" class="luca-icon" />
+      <h1>お<ruby>知<rt>し</rt></ruby>らせ</h1>
+    </header>
+
+    <div class="card">
+      <div id="news-list" class="news-list"></div>
+    </div>
+
+    <button class="back-btn" data-back="home-page">← ホームに<ruby>戻<rt>もど</rt></ruby>る</button>
+  </div>
+
+  <!-- 教科選択画面 -->
+  <div id="subject-page" class="full-page">
+    <div class="card">
+      <h2 class="page-title"><ruby>教科<rt>きょうか</rt></ruby>を<ruby>選<rt>えら</rt></ruby>んでにゃ！</h2>
+      <div class="subject-buttons" id="subject-buttons"></div>
+      <button class="back-btn" data-back="home-page">← ホームに<ruby>戻<rt>もど</rt></ruby>る</button>
+    </div>
+  </div>
+
+  <!-- レベル選択画面 -->
+  <div id="level-page" class="full-page">
+    <div class="card">
+      <h2 class="page-title" id="level-title"><ruby>学年<rt>がくねん</rt></ruby>を<ruby>選<rt>えら</rt></ruby>んでにゃ！</h2>
+      <div class="level-buttons" id="level-buttons"></div>
+      <button class="back-btn" data-back="subject-page">← <ruby>教科選択<rt>きょうかせんたく</rt></ruby>に<ruby>戻<rt>もど</rt></ruby>る</button>
+    </div>
+  </div>
+
+  <!-- クイズ画面 -->
+  <div id="quiz-page" class="full-page">
+    <header>
+      <img src="luca.png" alt="LUCA" class="luca-icon" />
+      <h1>LUCA</h1>
+    </header>
+
+    <div class="card">
+      <div id="quiz-label"></div>
+      <div id="quiz-word"><ruby>読<rt>よ</rt></ruby>み<ruby>込<rt>こ</rt></ruby>み<ruby>中<rt>ちゅう</rt></ruby>...</div>
+      <div id="quiz-count"></div>
+
+      <div class="choices"></div>
+
+      <div id="answer-area">
+        <div id="answer-message"></div>
+        <div id="answer-detail"></div>
+        <button id="next-btn"><ruby>次<rt>つぎ</rt></ruby>の<ruby>問題<rt>もんだい</rt></ruby> →</button>
+      </div>
+    </div>
+
+    <button class="back-btn" data-back="level-page">← <ruby>学年選択<rt>がくねんせんたく</rt></ruby>に<ruby>戻<rt>もど</rt></ruby>る</button>
+  </div>
+
+  <!-- ダンジョン選択画面 -->
+  <div id="dungeon-select-page" class="full-page">
+    <header>
+      <img src="luca.png" alt="LUCA" class="luca-icon" />
+      <h1>ダンジョン</h1>
+    </header>
+
+    <div class="card">
+      <h2 class="page-title">⚔️ <ruby>挑戦<rt>ちょうせん</rt></ruby>するダンジョンを<ruby>選<rt>えら</rt></ruby>べ！</h2>
+      <div id="dungeon-list" class="dungeon-list"></div>
+    </div>
+
+    <button class="back-btn" data-back="home-page">← ホームに<ruby>戻<rt>もど</rt></ruby>る</button>
+  </div>
+
+  <!-- ダンジョンバトル画面 -->
+  <div id="dungeon-battle-page" class="full-page">
+    <div class="card battle-card">
+      <!-- ボス表示 -->
+      <div class="boss-area">
+        <div id="boss-icon" class="boss-icon"></div>
+        <div id="boss-name" class="boss-name"></div>
+        <div class="hp-bar-container">
+          <div id="boss-hp-bar" class="hp-bar boss-hp-bar"></div>
+        </div>
+        <div id="boss-hp-text" class="hp-text"></div>
+      </div>
+
+      <!-- プレイヤー表示 -->
+      <div class="player-area">
+        <div class="player-label">🐱 LUCA</div>
+        <div class="hp-bar-container">
+          <div id="player-hp-bar" class="hp-bar player-hp-bar"></div>
+        </div>
+        <div id="player-hp-text" class="hp-text"></div>
+      </div>
+
+      <!-- 問題エリア -->
+      <div id="battle-question" class="battle-question"></div>
+      <div class="choices" id="battle-choices"></div>
+
+      <!-- バトル結果 -->
+      <div id="battle-result" style="display:none;">
+        <div id="battle-message" class="battle-message"></div>
+        <div id="battle-detail" class="battle-detail"></div>
+      </div>
+
+      <div id="battle-answer-area" class="battle-answer-area" style="display:none;">
+        <div id="battle-answer-msg"></div>
+        <button id="battle-next-btn" class="battle-next-btn"><ruby>次<rt>つぎ</rt></ruby>の<ruby>攻撃<rt>こうげき</rt></ruby> →</button>
+      </div>
+    </div>
+
+    <button class="back-btn" data-back="dungeon-select-page">← ダンジョン<ruby>選択<rt>せんたく</rt></ruby>に<ruby>戻<rt>もど</rt></ruby>る</button>
+  </div>
+
+  <!-- ガチャ画面 -->
+  <div id="gacha-page" class="full-page">
+    <header>
+      <img src="luca.png" alt="LUCA" class="luca-icon" />
+      <h1>LUCA ガチャ</h1>
+    </header>
+
+    <div class="card gacha-card">
+      <div class="gacha-points">
+        <ruby>所持<rt>しょじ</rt></ruby>ポイント：<span id="gacha-pt">0</span> pt
+      </div>
+
+      <!-- ガチャ結果エリア -->
+      <div id="gacha-result" class="gacha-result" style="display:none;">
+        <div id="gacha-rarity-label" class="gacha-rarity-label"></div>
+        <div id="gacha-card-display" class="gacha-card-display">
+          <div id="gacha-card-icon" class="gacha-card-icon"></div>
+          <div id="gacha-card-name" class="gacha-card-name"></div>
+          <div id="gacha-card-desc" class="gacha-card-desc"></div>
+        </div>
+      </div>
+
+      <!-- ガチャ前の表示 -->
+      <div id="gacha-intro" class="gacha-intro">
+        <img src="gacha_world_tree.png" alt="世界樹" class="gacha-tree-img" />
+        <p class="gacha-tree-text"><ruby>世界樹<rt>せかいじゅ</rt></ruby>に<ruby>願<rt>ねが</rt></ruby>いをささげよう…</p>
+      </div>
+
+      <button id="pull-gacha-btn" class="gacha-pull-btn">🌳 <ruby>世界樹<rt>せかいじゅ</rt></ruby>に<ruby>祈<rt>いの</rt></ruby>る（30pt）</button>
+      <div id="gacha-error" class="gacha-error" style="display:none;"></div>
+    </div>
+
+    <button class="back-btn" data-back="home-page">← ホームに<ruby>戻<rt>もど</rt></ruby>る</button>
+  </div>
+
+  <!-- コレクション画面 -->
+  <div id="collection-page" class="full-page">
+    <header>
+      <img src="luca.png" alt="LUCA" class="luca-icon" />
+      <h1>コレクション</h1>
+    </header>
+
+    <div class="card">
+      <div id="collection-grid" class="collection-grid"></div>
+    </div>
+
+    <button class="back-btn" data-back="home-page">← ホームに<ruby>戻<rt>もど</rt></ruby>る</button>
+  </div>
+
+  <!-- 問題管理画面 -->
+  <div id="manage-page" class="full-page">
+    <header>
+      <img src="luca.png" alt="LUCA" class="luca-icon" />
+      <h1>LUCA</h1>
+    </header>
+
+    <div class="card">
+      <h2 class="page-title"><ruby>問題管理<rt>もんだいかんり</rt></ruby></h2>
+      <form id="word-form">
+        <select id="input-subject">
+          <option value="english"><ruby>英語<rt>えいご</rt></ruby></option>
+          <option value="kokugo"><ruby>国語<rt>こくご</rt></ruby></option>
+          <option value="rika"><ruby>理科<rt>りか</rt></ruby></option>
+          <option value="sansu"><ruby>算数<rt>さんすう</rt></ruby>・<ruby>数学<rt>すうがく</rt></ruby></option>
+          <option value="shakai"><ruby>社会<rt>しゃかい</rt></ruby></option>
+        </select>
+        <select id="input-level">
+          <option value="e34"><ruby>小<rt>しょう</rt></ruby>3-4<ruby>年<rt>ねん</rt></ruby></option>
+          <option value="e56"><ruby>小<rt>しょう</rt></ruby>5-6<ruby>年<rt>ねん</rt></ruby></option>
+          <option value="m1"><ruby>中<rt>ちゅう</rt></ruby>1<ruby>年<rt>ねん</rt></ruby></option>
+          <option value="m2"><ruby>中<rt>ちゅう</rt></ruby>2<ruby>年<rt>ねん</rt></ruby></option>
+          <option value="m23"><ruby>中<rt>ちゅう</rt></ruby>2-3<ruby>年<rt>ねん</rt></ruby></option>
+        </select>
+        <input
+          id="input-word"
+          type="text"
+          placeholder="答え（例：APPLE）"
+          maxlength="30"
+          required
+        />
+        <input
+          id="input-meaning"
+          type="text"
+          placeholder="問題（例：リンゴ）"
+          maxlength="60"
+          required
+        />
+        <button type="submit">＋ <ruby>追加<rt>ついか</rt></ruby>する</button>
+      </form>
+
+      <ul id="word-list"></ul>
+    </div>
+
+    <button class="back-btn" data-back="home-page">← ホームに<ruby>戻<rt>もど</rt></ruby>る</button>
+  </div>
+
+  <script src="news.js"></script>
+  <script src="subjects.js"></script>
+  <script src="gacha.js"></script>
+  <script src="dungeon.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
