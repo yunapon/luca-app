@@ -838,8 +838,9 @@ function checkSpell() {
     answerMsg.style.color = "#2a7a50";
     answerArea.style.backgroundColor = "#d4f4e7";
     answerArea.style.borderColor = "#4caf82";
-    answerDetail.innerHTML = `${item.meaning}（${correct}）`;
+    answerDetail.innerHTML = `${item.meaning}（${correct}）<br><span style="color:#e6a800;font-weight:bold;">+${POINTS_PER_SPELL} pt</span>`;
     addPoints(POINTS_PER_SPELL);
+    showPointPopup(POINTS_PER_SPELL);
     updatePointDisplay();
     trackCorrect();
   } else {
@@ -1082,7 +1083,11 @@ function handleAnswer(selected, correct, meaning, wordIndex) {
     answerArea.style.backgroundColor = "#fde8e8";
   }
 
-  detail.innerHTML = `<ruby>正解<rt>せいかい</rt></ruby>：${meaning}（${correct}）`;
+  if (isCorrect) {
+    detail.innerHTML = `<ruby>正解<rt>せいかい</rt></ruby>：${meaning}（${correct}）<br><span style="color:#e6a800;font-weight:bold;">+${POINTS_PER_CORRECT} pt</span>`;
+  } else {
+    detail.innerHTML = `<ruby>正解<rt>せいかい</rt></ruby>：${meaning}（${correct}）`;
+  }
 }
 
 // 次の問題へ
