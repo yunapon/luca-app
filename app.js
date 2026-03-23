@@ -1,5 +1,6 @@
 const QUESTIONS_PER_QUIZ = 10;
-const POINTS_PER_CORRECT = 10;
+const POINTS_PER_CORRECT = 5;      // 4択クイズ：1問5pt
+const POINTS_PER_SPELL = 10;       // スペル入力：1問10pt
 
 // ============================
 // ユーザー管理システム
@@ -838,7 +839,7 @@ function checkSpell() {
     answerArea.style.backgroundColor = "#d4f4e7";
     answerArea.style.borderColor = "#4caf82";
     answerDetail.innerHTML = `${item.meaning}（${correct}）`;
-    addPoints(POINTS_PER_CORRECT);
+    addPoints(POINTS_PER_SPELL);
     updatePointDisplay();
     trackCorrect();
   } else {
