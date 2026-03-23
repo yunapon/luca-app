@@ -110,6 +110,51 @@
     </div>
   </div>
 
+  <!-- モード選択画面（英語のみ） -->
+  <div id="mode-page" class="full-page">
+    <div class="card">
+      <h2 class="page-title">モードを<ruby>選<rt>えら</rt></ruby>んでにゃ！</h2>
+      <div class="mode-buttons">
+        <button class="mode-btn" id="mode-quiz-btn">
+          <div class="mode-icon">🔤</div>
+          <div class="mode-name">4<ruby>択<rt>たく</rt></ruby>クイズ</div>
+          <div class="mode-desc"><ruby>意味<rt>いみ</rt></ruby>を<ruby>見<rt>み</rt></ruby>て<ruby>正<rt>ただ</rt></ruby>しい<ruby>単語<rt>たんご</rt></ruby>を<ruby>選<rt>えら</rt></ruby>ぶ</div>
+        </button>
+        <button class="mode-btn" id="mode-spell-btn">
+          <div class="mode-icon">⌨️</div>
+          <div class="mode-name">スペル<ruby>入力<rt>にゅうりょく</rt></ruby></div>
+          <div class="mode-desc"><ruby>意味<rt>いみ</rt></ruby>を<ruby>見<rt>み</rt></ruby>て<ruby>英単語<rt>えいたんご</rt></ruby>を<ruby>打<rt>う</rt></ruby>ち<ruby>込<rt>こ</rt></ruby>む</div>
+        </button>
+      </div>
+      <button class="back-btn" data-back="level-page">← レベル<ruby>選択<rt>せんたく</rt></ruby>に<ruby>戻<rt>もど</rt></ruby>る</button>
+    </div>
+  </div>
+
+  <!-- スペルクイズ画面 -->
+  <div id="spell-page" class="full-page">
+    <header>
+      <img src="luca.png" alt="LUCA" class="luca-icon" />
+      <h1>スペル<ruby>入力<rt>にゅうりょく</rt></ruby></h1>
+    </header>
+
+    <div class="card">
+      <div id="spell-label" class="spell-label"></div>
+      <div id="spell-word" class="spell-word"></div>
+      <div id="spell-count" class="spell-count"></div>
+
+      <input id="spell-input" type="text" class="spell-input" placeholder="<ruby>英単語<rt>えいたんご</rt></ruby>を<ruby>入力<rt>にゅうりょく</rt></ruby>..." autocomplete="off" autocapitalize="off" />
+      <button id="spell-check-btn" class="spell-check-btn"><ruby>答<rt>こた</rt></ruby>え<ruby>合<rt>あ</rt></ruby>わせ</button>
+
+      <div id="spell-answer-area" class="spell-answer-area" style="display:none;">
+        <div id="spell-answer-msg"></div>
+        <div id="spell-answer-detail"></div>
+        <button id="spell-next-btn" class="spell-next-btn"><ruby>次<rt>つぎ</rt></ruby>の<ruby>問題<rt>もんだい</rt></ruby> →</button>
+      </div>
+    </div>
+
+    <button class="back-btn" data-back="mode-page">← モード<ruby>選択<rt>せんたく</rt></ruby>に<ruby>戻<rt>もど</rt></ruby>る</button>
+  </div>
+
   <!-- クイズ画面 -->
   <div id="quiz-page" class="full-page">
     <header>

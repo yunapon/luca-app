@@ -719,15 +719,22 @@ function buildLevelButtons(subjectId) {
   const subject = SUBJECTS[subjectId];
   const availableLevels = subject.levels;
 
+  // レベル選択後の遷移先を決める
+  function onLevelSelected(lvId) {
+    selectedLevel = lvId;
+    if (selectedSubject === "english") {
+      showPage("mode-page");
+    } else {
+      initQuiz();
+      showPage("quiz-page");
+    }
+  }
+
   // 全レベルボタン
   const allBtn = document.createElement("button");
   allBtn.className = "level-select-btn";
   allBtn.innerHTML = `<ruby>全<rt>ぜん</rt></ruby>レベル`;
-  allBtn.addEventListener("click", () => {
-    selectedLevel = "all";
-    initQuiz();
-    showPage("quiz-page");
-  });
+  allBtn.addEventListener("click", () => onLevelSelected("all"));
   container.appendChild(allBtn);
 
   // 各レベルボタン
@@ -735,13 +742,173 @@ function buildLevelButtons(subjectId) {
     const btn = document.createElement("button");
     btn.className = "level-select-btn";
     btn.innerHTML = LEVELS[lvId];
-    btn.addEventListener("click", () => {
-      selectedLevel = lvId;
-      initQuiz();
-      showPage("quiz-page");
-    });
+    btn.addEventListener("click", () => onLevelSelected(lvId));
     container.appendChild(btn);
   });
+}
+
+// --- モード選択（英語のみ） ---
+document.getElementById("mode-quiz-btn").addEventListener("click", () => {
+  initQuiz();
+  showPage("quiz-page");
+});
+
+document.getElementById("mode-spell-btn").addEventListener("click", () => {
+  initSpellQuiz();
+  showPage("spell-page");
+});
+
+// --- スペルクイズの状態 ---
+let spellWords = [];
+let spellIndex = 0;
+let spellOrder = [];
+let spellCorrectCount = 0;
+let spellWrongIndexes = [];
+let spellAnswered = false;
+
+// --- スペルクイズを初期化 ---
+function initSpellQuiz() {
+  spellWords = getFilteredWords();
+  if (spellWords.length === 0) {
+    document.getElementById("spell-label").textContent = "";
+    document.getElementById("spell-word").innerHTML = "<ruby>単語<rt>たんご</rt></ruby>がないにゃ！";
+    document.getElementById("spell-count").textContent = "";
+    document.getElementById("spell-input").style.display = "none";
+    document.getElementById("spell-check-btn").style.display = "none";
+    return;
+  }
+
+  const allIndexes = [...Array(spellWords.length).keys()].sort(() => Math.random() - 0.5);
+  spellOrder = allIndexes.slice(0, Math.min(QUESTIONS_PER_QUIZ, spellWords.length));
+  spellIndex = 0;
+  spellCorrectCount = 0;
+  spellWrongIndexes = [];
+  showSpellQuestion();
+}
+
+// --- スペル問題を表示 ---
+function showSpellQuestion() {
+  spellAnswered = false;
+  document.getElementById("spell-answer-area").style.display = "none";
+  document.getElementById("spell-input").style.display = "";
+  document.getElementById("spell-check-btn").style.display = "";
+  document.getElementById("spell-input").value = "";
+  document.getElementById("spell-input").disabled = false;
+  document.getElementById("spell-check-btn").disabled = false;
+
+  if (spellIndex >= spellOrder.length) {
+    showSpellResult();
+    return;
+  }
+
+  const item = spellWords[spellOrder[spellIndex]];
+  document.getElementById("spell-label").innerHTML = "この<ruby>意味<rt>いみ</rt></ruby>の<ruby>英単語<rt>えいたんご</rt></ruby>を<ruby>入力<rt>にゅうりょく</rt></ruby>にゃ！";
+  document.getElementById("spell-word").innerHTML = item.meaning;
+  document.getElementById("spell-count").innerHTML = `${spellIndex + 1} / ${spellOrder.length} <ruby>問<rt>もん</rt></ruby>`;
+  document.getElementById("spell-input").focus();
+}
+
+// --- スペル答え合わせ ---
+document.getElementById("spell-check-btn").addEventListener("click", checkSpell);
+document.getElementById("spell-input").addEventListener("keydown", (e) => {
+  if (e.key === "Enter" && !spellAnswered) checkSpell();
+});
+
+function checkSpell() {
+  if (spellAnswered) return;
+  spellAnswered = true;
+
+  const input = document.getElementById("spell-input").value.trim().toUpperCase();
+  const item = spellWords[spellOrder[spellIndex]];
+  const correct = item.word.toUpperCase();
+  const isCorrect = input === correct;
+
+  document.getElementById("spell-input").disabled = true;
+  document.getElementById("spell-check-btn").disabled = true;
+
+  const answerArea = document.getElementById("spell-answer-area");
+  const answerMsg = document.getElementById("spell-answer-msg");
+  const answerDetail = document.getElementById("spell-answer-detail");
+  answerArea.style.display = "block";
+
+  if (isCorrect) {
+    spellCorrectCount++;
+    answerMsg.innerHTML = "<ruby>正解<rt>せいかい</rt></ruby>にゃ！";
+    answerMsg.style.color = "#2a7a50";
+    answerArea.style.backgroundColor = "#d4f4e7";
+    answerArea.style.borderColor = "#4caf82";
+    answerDetail.innerHTML = `${item.meaning}（${correct}）`;
+    addPoints(POINTS_PER_CORRECT);
+    updatePointDisplay();
+    trackCorrect();
+  } else {
+    spellWrongIndexes.push(spellOrder[spellIndex]);
+    answerMsg.innerHTML = "<ruby>残念<rt>ざんねん</rt></ruby>にゃ…";
+    answerMsg.style.color = "#a03030";
+    answerArea.style.backgroundColor = "#fde8e8";
+    answerArea.style.borderColor = "#e08080";
+    answerDetail.innerHTML = `<ruby>正解<rt>せいかい</rt></ruby>：<strong>${correct}</strong><br>${item.meaning}`;
+    trackWrong();
+  }
+}
+
+// --- 次のスペル問題 ---
+document.getElementById("spell-next-btn").addEventListener("click", () => {
+  spellIndex++;
+  showSpellQuestion();
+});
+
+// --- スペルクイズ結果 ---
+function showSpellResult() {
+  const wrong = spellWrongIndexes.length;
+  const correct = spellOrder.length - wrong;
+
+  document.getElementById("spell-label").textContent = "";
+  document.getElementById("spell-word").textContent = "おつかれさま！";
+  document.getElementById("spell-count").innerHTML = `<ruby>正解<rt>せいかい</rt></ruby> ${correct} <ruby>問<rt>もん</rt></ruby> / <ruby>間違<rt>まちが</rt></ruby>い ${wrong} <ruby>問<rt>もん</rt></ruby>`;
+  document.getElementById("spell-input").style.display = "none";
+  document.getElementById("spell-check-btn").style.display = "none";
+  document.getElementById("spell-answer-area").style.display = "none";
+
+  const container = document.createElement("div");
+  container.style.cssText = "display:flex;flex-direction:column;gap:10px;margin-top:16px;";
+
+  if (spellWrongIndexes.length > 0) {
+    const retryBtn = document.createElement("button");
+    retryBtn.className = "result-btn retry";
+    retryBtn.innerHTML = `<ruby>間違<rt>まちが</rt></ruby>えた ${wrong} <ruby>問<rt>もん</rt></ruby>をもう<ruby>一度<rt>いちど</rt></ruby>`;
+    retryBtn.addEventListener("click", () => {
+      spellOrder = [...spellWrongIndexes].sort(() => Math.random() - 0.5);
+      spellIndex = 0;
+      spellCorrectCount = 0;
+      spellWrongIndexes = [];
+      container.remove();
+      showSpellQuestion();
+    });
+    container.appendChild(retryBtn);
+  }
+
+  const restartBtn = document.createElement("button");
+  restartBtn.className = "result-btn";
+  restartBtn.innerHTML = "<ruby>最初<rt>さいしょ</rt></ruby>からやる";
+  restartBtn.addEventListener("click", () => {
+    container.remove();
+    initSpellQuiz();
+  });
+  container.appendChild(restartBtn);
+
+  const homeBtn = document.createElement("button");
+  homeBtn.className = "result-btn home";
+  homeBtn.innerHTML = "ホームに<ruby>戻<rt>もど</rt></ruby>る";
+  homeBtn.addEventListener("click", () => {
+    container.remove();
+    setSubjectColors(null);
+    updatePointDisplay();
+    showPage("home-page");
+  });
+  container.appendChild(homeBtn);
+
+  document.getElementById("spell-word").after(container);
 }
 
 // --- クイズの状態 ---
